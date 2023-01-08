@@ -24,8 +24,9 @@ sudo usermod -aG docker ${USER}
 sudo chmod 666 /var/run/docker.sock
 GFLOPS=$(docker run -e LINPACK_ARRAY_SIZE=150 h20180061/linpack | grep % | grep -oE '[^ ]+$')
 
-sysbench fileio --file-test-mode=seqwr prepare
+sysbench fileio --file-test-mode=seqwr prepare > /dev/null 2>&1
 FILEIO_SEQWR=$(sysbench fileio --file-test-mode=seqwr run | grep 'writes/s:\|fsyncs/s:\|written,\|of events:')
+sysbench fileio --file-test-mode=seqrd prepare > /dev/null 2>&1
 FILEIO_SEQRD=$(sysbench fileio --file-test-mode=seqrd run | grep 'reads/s:\|read,\|of events:')
 FILEIO_SEQREWR=$(sysbench fileio --file-test-mode=seqrewr run | grep 'writes/s:\|fsyncs/s:\|written,\|of events:')
 sysbench fileio --file-test-mode=seqrewr cleanup > /dev/null 2>&1
